@@ -3,7 +3,7 @@
 # The 'run' script performs simple tests that verifies usability
 # of the image
 #
-# IMAGE_NAME specifies a name of the candidate image used for testing.
+# BUILDER_IMAGE_NAME specifies a name of the candidate image used for testing.
 # The image has to be available before this script is executed.
 #
 # MONGODB_IMAGE specifies the name of the mongodb image to use for
@@ -11,16 +11,13 @@
 # centos/mongodb-32-centos7
 #
 # TH_STORAGE_IMAGE specifies the name of the Thermostat storage image
-# which should be used for testing. Should be one of
-# rhscl/thermostat-16-storage-rhel7 or centos/thermostat-16-storage-centos7
+# which should be used for testing.
 #
 # DEBUG environment variable, if not empty, makes 'run' to log every step
 # of testing.
 #
 # Example usage:
-#   $ IMAGE_NAME=rhscl/thermostat-16-agent-rhel7 \
-#     TH_STORAGE_IMAGE=rhscl/thermostat-16-storage-rhel7 \
-#     MONGODB_IMAGE=rhscl/mongodb-32-rhel7 \
+#   $ BUILDER_IMAGE_NAME=thermostat-agent-builder \
 #     test/run
 # 
 
@@ -30,9 +27,10 @@ if [ "$DEBUG" != "" ]; then
   set -x
 fi
 
-IMAGE_NAME=${IMAGE_NAME:-centos/thermostat-16-agent-centos7}
+BUILDER_IMAGE_NAME=${BUILDER_IMAGE_NAME:-icedtea/thermostat-agent-builder-centos7}
+IMAGE_NAME="icedtea/thermostat-agent-centos7"
 MONGODB_IMAGE=${MONGODB_IMAGE:-centos/mongodb-32-centos7}
-TH_STORAGE_IMAGE=${TH_STORAGE_IMAGE:-centos/thermostat-16-storage-centos7}
+TH_STORAGE_IMAGE=${TH_STORAGE_IMAGE:-icedtea/thermostat-storage-centos7}
 
 MONGO_USER="mongo"
 MONGO_PWD="mongo"
@@ -41,6 +39,7 @@ TH_AGENT_PWD="a-pwd"
 TH_CLIENT_USER="c"
 TH_CLIENT_PWD="c-pwd"
 TH_BASED_BUILDER_IMAGE="thermostat/builder-img-wildfly"
+THERMOSTAT_VERSION="Thermostat version 1.99.12"
 
 MONGO_CID_FILE="$(mktemp -u --suffix=.cid)"
 TH_STORAGE_CID_FILE="$(mktemp -u --suffix=.cid)"
@@ -59,6 +58,11 @@ info() {
 
 image_exists() {
   docker inspect $1 &>/dev/null
+}
+
+build_agent_image() {
+  s2i build https://github.com/jerboaa/thermostat ${BUILDER_IMAGE_NAME} ${IMAGE_NAME}
+  check_result $?
 }
 
 container_exists() {
@@ -121,10 +125,12 @@ run_th_storage_image() {
 }
 
 prepare() {
-  if ! image_exists ${IMAGE_NAME}; then
-    echo "ERROR: The image ${IMAGE_NAME} must exist before this script is executed."
+  if ! image_exists ${BUILDER_IMAGE_NAME}; then
+    echo "ERROR: The image ${BUILDER_IMAGE_NAME} must exist before this script is executed."
     exit 1
   fi
+  info "Building ${IMAGE_NAME} from source ..."
+  build_agent_image
 }
 
 run_storage() {
@@ -309,11 +315,11 @@ cid_file=$(mktemp -u --suffix=.cid)
 run_storage
 # Basic sanity testing. Includes running the container, connected to
 # THERMOSTAT_DB_URL with default config (no random id).
-info "Running image sanity test with default config."
+info "Running image sanity test with default config ..."
 run_image
 wait_for_cid
 info "   Testing thermostat --version ..."
-test_command_in_container "thermostat --version" "Thermostat version 1.6.6" ${cid_file}
+test_command_in_container "thermostat --version" "${THERMOSTAT_VERSION}" ${cid_file}
 check_result $?
 info "   Testing whoami ..."
 test_command_in_container "whoami" "default" ${cid_file}
@@ -327,11 +333,11 @@ cid_file=$(mktemp -u --suffix=.cid)
 run_storage
 # Same basic sanity test where container runs with random UID.
 CONTAINER_ARGS="-u 12345"
-info "Running image sanity test with custom UID."
+info "Running image sanity test with random UID ..."
 run_image
 wait_for_cid
 info "   Testing thermostat --version ..."
-test_command_in_container "thermostat --version" "Thermostat version 1.6.6" ${cid_file}
+test_command_in_container "thermostat --version" "${THERMOSTAT_VERSION}" ${cid_file}
 info "   Testing whoami ..."
 test_command_in_container "whoami" "default" ${cid_file}
 check_result $?
