@@ -21,7 +21,6 @@ fi
 
 # Set the agent connect credentials
 echo -en "username=${THERMOSTAT_AGENT_USERNAME}\npassword=${THERMOSTAT_AGENT_PASSWORD}\n" > "${USER_THERMOSTAT_HOME}/etc/agent.auth"
-chmod 600 "${USER_THERMOSTAT_HOME}/etc/agent.auth"
 # Set up the command channel server to listen on
 # the specified address and port.
 sed "s%CONFIG_LISTEN_ADDRESS=.*%CONFIG_LISTEN_ADDRESS=0.0.0.0:${THERMOSTAT_CMDC_PORT}%g" ${THERMOSTAT_HOME}/etc/agent.properties > ${USER_THERMOSTAT_HOME}/etc/agent.properties
