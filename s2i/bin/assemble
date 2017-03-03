@@ -4,7 +4,7 @@ echo "---> Installing Thermostat Agent source ..."
 mv /tmp/src/* ./
 
 echo "---> Building Thermostat Agent ..."
-mvn -DagentImage clean install
+mvn -DagentImage clean package
 if [ $? -ne 0 ]; then
   echo "Build failed. Abort."
   exit 1
