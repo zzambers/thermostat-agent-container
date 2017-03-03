@@ -4,7 +4,7 @@ echo "---> Installing Thermostat Agent source ..."
 mv /tmp/src/* ./
 
 echo "---> Building Thermostat Agent ..."
-mvn -DagentImage clean package
+mvn -DagentImage clean install
 if [ $? -ne 0 ]; then
   echo "Build failed. Abort."
   exit 1
@@ -12,8 +12,15 @@ fi
 
 echo "---> Installing Thermostat Agent in /opt/app-root/bin ..."
 cp -r distribution/target/image/* ${THERMOSTAT_HOME}
+sed -i -e 's|com.redhat.thermostat.level=CONFIG|#com.redhat.thermostat.level=CONFIG|g' \
+       -e 's|#com.redhat.thermostat.level=WARNING|com.redhat.thermostat.level=WARNING|g' \
+    ${THERMOSTAT_HOME}/etc/logging.properties
 ln -s ${THERMOSTAT_HOME}/bin /opt/app-root/bin
+# Run thermostat --version in order to produce basic directory
+# structure. Then fix up permissions.
+${THERMOSTAT_HOME}/bin/thermostat --version > /dev/null
 fix-permissions ${THERMOSTAT_HOME}
+fix-permissions ${USER_THERMOSTAT_HOME}
 
 echo "---> Cleaning up build artefacts ..."
 mvn clean
