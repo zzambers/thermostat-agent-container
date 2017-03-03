@@ -1,5 +1,5 @@
 FROM centos/s2i-base-centos7
-# Thermostat Agent Image.
+# Thermostat Agent Builder Image.
 #
 # Environment:
 #  * $THERMOSTAT_AGENT_USERNAME - User name for the thermostat agent to use
@@ -22,9 +22,6 @@ ENV USER_THERMOSTAT_HOME /opt/app-root/.thermostat
 
 EXPOSE ${THERMOSTAT_CMDC_PORT}
 
-# Install s2i build scripts
-COPY ./s2i/bin/ ${STI_SCRIPTS_PATH}
-
 # Ensure THERMOSTAT_HOME (and parents) exist
 RUN mkdir -p ${THERMOSTAT_HOME}
 
@@ -35,6 +32,10 @@ RUN yum install -y centos-release-scl-rh && \
     gcc gtk2-devel autoconf automake libtool && \
     yum erase -y java-1.8.0-openjdk-headless && \
     yum clean all -y
+
+# Install s2i build scripts
+COPY ./s2i/bin/ ${STI_SCRIPTS_PATH}
+
 COPY thermostat-user-home-config ${USER_THERMOSTAT_HOME}
 COPY contrib /opt/app-root
 
