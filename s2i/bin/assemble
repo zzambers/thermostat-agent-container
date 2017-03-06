@@ -16,14 +16,15 @@ sed -i -e 's|com.redhat.thermostat.level=CONFIG|#com.redhat.thermostat.level=CON
        -e 's|#com.redhat.thermostat.level=WARNING|com.redhat.thermostat.level=WARNING|g' \
     ${THERMOSTAT_HOME}/etc/logging.properties
 ln -s ${THERMOSTAT_HOME}/bin /opt/app-root/bin
+
+echo "---> Cleaning up sources ..."
+rm -rf ./*
+
 # Run thermostat --version in order to produce basic directory
 # structure. Then fix up permissions.
 ${THERMOSTAT_HOME}/bin/thermostat --version > /dev/null
 fix-permissions ${THERMOSTAT_HOME}
 fix-permissions ${USER_THERMOSTAT_HOME}
-
-echo "---> Cleaning up build artefacts ..."
-mvn clean
 
 rm -rf /tmp/hsperfdata_*
 exit 0
