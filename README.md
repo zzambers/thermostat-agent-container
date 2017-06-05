@@ -20,7 +20,7 @@ the Docker run command.
 |  `THERMOSTAT_<plugin>_URL`    | The URL for Thermostat storage              |
 |  `APP_USER`                   | The application user the Java app Thermostat shall monitor runs as |
 
-Substitute `<plugin>` for the following: `VM_GC`, `VM_MEMORY`
+Substitute `<plugin>` for the following: `VM_GC`, `VM_MEMORY`, `HOST_OVERVIEW`
 
 Usage
 ---------------------------------

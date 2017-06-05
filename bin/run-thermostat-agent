@@ -3,7 +3,7 @@ if [ ! -d "${USER_THERMOSTAT_HOME}/etc" ]; then
   mkdir -p "${USER_THERMOSTAT_HOME}/etc"
 fi
 
-plugins="vm-gc vm-memory"
+plugins="vm-gc vm-memory host-overview"
 for plugin in ${plugins}; do
   prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/gateway.properties
   if [ ! -e "${prop_file}" ]; then
