@@ -1,0 +1,365 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "thermostat-ng-agent",
+        "annotations": {
+            "openshift.io/display-name": "Thermostat Agent (NG)",
+            "description": "Run the Thermostat monitoring agent for OpenJDK 8.",
+            "tags": "java",
+            "iconClass": "icon-openjdk"
+        }
+    },
+    "objects": [
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "openjdk-8-64bit-maven",
+                "labels": {
+                    "build": "openjdk-8-64bit-maven",
+                    "jdk8": ""
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    }
+                ],
+                "runPolicy": "Serial",
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/jerboaa/openjdk-8-maven-docker"
+                    }
+                },
+                "strategy": {
+                    "type": "Docker",
+                    "dockerStrategy": {
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "docker.io/centos/s2i-base-centos7:latest"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "openjdk-8-64bit-maven:latest"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-agent-container",
+                "labels": {
+                    "build": "thermostat-agent-container"
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    }
+                ],
+                "runPolicy": "Serial",
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/ebaron/thermostat-agent-container"
+                    }
+                },
+                "strategy": {
+                    "type": "Docker",
+                    "dockerStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "openjdk-8-64bit-maven:latest"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "thermostat-agent-container:latest"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-ng-agent",
+                "labels": {
+                    "build": "thermostat-ng-agent"
+                }
+            },
+            "spec": {
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {}
+                    }
+                ],
+                "runPolicy": "Serial",
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "https://github.com/ebaron/thermostat-ng-agent.git"
+                    }
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "thermostat-agent-container:latest"
+                        }
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "thermostat-ng-agent:latest"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "openjdk-8-64bit-maven",
+                "generation": 1,
+                "labels": {
+                    "build": "openjdk-8-64bit-maven",
+                    "jdk8": ""
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "openjdk-8-64bit-maven:latest"
+                        },
+                        "generation": 1,
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": "Source"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-agent-container",
+                "generation": 1,
+                "labels": {
+                    "build": "thermostat-agent-container"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "thermostat-agent-container:latest"
+                        },
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": ""
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-ng-agent",
+                "generation": 1,
+                "labels": {
+                    "build": "thermostat-ng-agent"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "thermostat-ng-agent:latest"
+                        },
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": ""
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-ng-agent",
+                "generation": 1,
+                "labels": {
+                    "app": "thermostat-ng-agent"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 600,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {},
+                    "activeDeadlineSeconds": 21600
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "thermostat-ng-agent"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "thermostat-ng-agent:latest"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "test": false,
+                "selector": {
+                    "app": "thermostat-ng-agent",
+                    "deploymentconfig": "thermostat-ng-agent"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "app": "thermostat-ng-agent",
+                            "deploymentconfig": "thermostat-ng-agent"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "thermostat-ng-agent",
+                                "image": "thermostat-ng-agent:latest",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "THERMOSTAT_VM_GC_URL",
+                                        "value": "${VM_GC_URL}"
+                                    },
+                                    {
+                                        "name": "THERMOSTAT_VM_MEMORY_URL",
+                                        "value": "${VM_MEMORY_URL}"
+                                    },
+                                    {
+                                        "name": "THERMOSTAT_HOST_OVERVIEW_URL",
+                                        "value": "${HOST_OVERVIEW_URL}"
+                                    }
+                                ],
+                                "resources": {},
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always"
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-ng-agent",
+                "labels": {
+                    "app": "thermostat-ng-agent"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "8080-tcp",
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentconfig": "thermostat-ng-agent"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            }
+        }
+    ],
+    "parameters": [
+        {
+            "name": "VM_GC_URL",
+            "displayName": "\"jvm-gc\" microservice URL",
+            "description": "URL to the \"jvm-gc\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/jvm-gc/0.0.2"
+        },
+        {
+            "name": "VM_MEMORY_URL",
+            "displayName": "\"jvm-memory\" microservice URL",
+            "description": "URL to the \"jvm-memory\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/jvm-memory/0.0.2"
+        },
+        {
+            "name": "HOST_OVERVIEW_URL",
+            "displayName": "\"systems\" microservice URL",
+            "description": "URL to the \"systems\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/systems/0.0.1"
+        }
+    ]
+}
