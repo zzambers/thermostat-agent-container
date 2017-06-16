@@ -298,6 +298,10 @@
                                     {
                                         "name": "THERMOSTAT_HOST_OVERVIEW_URL",
                                         "value": "${HOST_OVERVIEW_URL}"
+                                    },
+                                    {
+                                        "name": "THERMOSTAT_COMMANDS_URL",
+                                        "value": "${COMMANDS_URL}"
                                     }
                                 ],
                                 "resources": {},
