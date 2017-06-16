@@ -367,6 +367,13 @@
             "value": "agent-pwd"
         },
         {
+            "name": "VM_GC_URL",
+            "displayName": "\"jvm-gc\" microservice URL",
+            "description": "URL to the \"jvm-gc\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/jvm-gc/0.0.2"
+        },
+        {
             "name": "VM_MEMORY_URL",
             "displayName": "\"jvm-memory\" microservice URL",
             "description": "URL to the \"jvm-memory\" microservice provided by the Thermostat web gateway",
@@ -385,7 +392,7 @@
             "displayName": "\"commands\" microservice URL",
             "description": "Web socket base URL to the commands microservice provided by the Thermostat web gateway",
             "required": true,
-            "value": "ws://127.0.0.1:30000/commands/v1"
+            "value": "ws://example.com:30000/commands/v1"
         }
     ]
 }
