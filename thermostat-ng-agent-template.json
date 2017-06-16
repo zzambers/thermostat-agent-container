@@ -360,6 +360,13 @@
             "description": "URL to the \"systems\" microservice provided by the Thermostat web gateway",
             "required": true,
             "value": "http://example.com:30000/systems/0.0.1"
+        },
+        {
+            "name": "COMMANDS_URL",
+            "displayName": "\"commands\" microservice URL",
+            "description": "Web socket base URL to the commands microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "ws://127.0.0.1:30000/commands/v1"
         }
     ]
 }
