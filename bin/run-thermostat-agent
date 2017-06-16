@@ -3,6 +3,20 @@ if [ ! -d "${USER_THERMOSTAT_HOME}/etc" ]; then
   mkdir -p "${USER_THERMOSTAT_HOME}/etc"
 fi
 
+# Require the following environment variables:
+# - THERMOSTAT_AGENT_USERNAME
+# - THERMOSTAT_AGENT_PASSWORD
+# - THERMOSTAT_<plugin>_URL, where <plugin> is each of names in
+#       the ${plugins} list defined below
+if [ "${THERMOSTAT_AGENT_USERNAME}_" == "_" ]; then
+   echo 1>&2 "Required environment variable THERMOSTAT_AGENT_USERNAME not set"
+   exit 1
+fi
+if [ "${THERMOSTAT_AGENT_PASSWORD}_" == "_" ]; then
+   echo 1>&2 "Required environment variable THERMOSTAT_AGENT_PASSWORD not set"
+   exit 1
+fi
+
 plugins="vm-gc vm-memory host-overview commands"
 for plugin in ${plugins}; do
   prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/gateway.properties
@@ -26,6 +40,9 @@ for plugin in ${plugins}; do
   # Replace default URL with value of environment variable
   sed "s|gatewayURL=.*|gatewayURL=${!url_var}|" "${prop_file}" > "${user_prop_file}"
 done
+
+# Set the agent connect credentials
+echo -en "username=${THERMOSTAT_AGENT_USERNAME}\npassword=${THERMOSTAT_AGENT_PASSWORD}\n" > "${USER_THERMOSTAT_HOME}/etc/agent.auth"
 
 # Run the agent
 ${THERMOSTAT_HOME}/bin/thermostat agent

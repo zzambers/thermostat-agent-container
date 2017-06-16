@@ -17,7 +17,9 @@ the Docker run command.
 
 |    Variable name              |    Description                              |
 | :---------------------------- | -----------------------------------------   |
-|  `THERMOSTAT_<plugin>_URL`    | The URL for Thermostat storage              |
+|  `THERMOSTAT_AGENT_USERNAME`  | User name for the Thermostat agent to use connecting to the web gateway |
+|  `THERMOSTAT_AGENT_PASSWORD`  | Password for connecting to the web gateway          |
+|  `THERMOSTAT_<plugin>_URL`    | The URL for the `<plugin>` microservice provided by the web gateway     |
 |  `APP_USER`                   | The application user the Java app Thermostat shall monitor runs as |
 
 Substitute `<plugin>` for the following: `VM_GC`, `VM_MEMORY`, `HOST_OVERVIEW`, `COMMANDS`
@@ -37,7 +39,7 @@ Once the base image is built, you need to build this image, let's call it `icedt
 Next, build a Thermostat Agent version into `icedtea/thermostat-ng-agent-centos7` using the builder
 image:
 
-    $ sudo s2i build https://github.com/jerboaa/thermostat icedtea/thermostat-ng-agent-builder-centos7 icedtea/thermostat-ng-agent-centos7
+    $ sudo s2i build https://github.com/ebaron/thermostat-ng-agent icedtea/thermostat-ng-agent-builder-centos7 icedtea/thermostat-ng-agent-centos7
 
 Then, image `icedtea/thermostat-ng-agent-centos7` is intended to be used as a base image for builder/runtime images in your
 Dockerfile via:

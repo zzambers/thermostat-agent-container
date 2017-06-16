@@ -288,6 +288,14 @@
                                 ],
                                 "env": [
                                     {
+                                        "name": "THERMOSTAT_AGENT_USERNAME",
+                                        "value": "${AGENT_USERNAME}"
+                                    },
+                                    {
+                                        "name": "THERMOSTAT_AGENT_PASSWORD",
+                                        "value": "${AGENT_PASSWORD}"
+                                    },
+                                    {
                                         "name": "THERMOSTAT_VM_GC_URL",
                                         "value": "${VM_GC_URL}"
                                     },
@@ -345,11 +353,18 @@
     ],
     "parameters": [
         {
-            "name": "VM_GC_URL",
-            "displayName": "\"jvm-gc\" microservice URL",
-            "description": "URL to the \"jvm-gc\" microservice provided by the Thermostat web gateway",
+            "name": "AGENT_USERNAME",
+            "displayName": "Thermostat agent username",
+            "description": "User name for the Thermostat agent to use connecting to the web gateway",
             "required": true,
-            "value": "http://example.com:30000/jvm-gc/0.0.2"
+            "value": "foo-agent-user"
+        },
+        {
+            "name": "AGENT_PASSWORD",
+            "displayName": "Thermostat agent password",
+            "description": "Password for connecting to the web gateway",
+            "required": true,
+            "value": "agent-pwd"
         },
         {
             "name": "VM_MEMORY_URL",
