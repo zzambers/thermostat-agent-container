@@ -6,8 +6,14 @@
 # such a storage endpoint:
 # https://github.com/jerboaa/thermostat-openshift
 
+required_vars="THERMOSTAT_AGENT_USERNAME \
+    THERMOSTAT_AGENT_PASSWORD \
+    THERMOSTAT_HOST_OVERVIEW_URL \
+    THERMOSTAT_VM_GC_URL \
+    THERMOSTAT_VM_MEMORY_URL \
+    THERMOSTAT_COMMANDS_URL"
 has_required_env=true
-for req_var in THERMOSTAT_AGENT_USERNAME THERMOSTAT_AGENT_PASSWORD THERMOSTAT_DB_URL; do
+for req_var in ${required_vars}; do
   if [ -z "${!req_var}" ]; then
     has_required_env=false
   fi
@@ -44,26 +50,28 @@ launch_agent() {
   run-thermostat-agent
 }
 
+print_vars() {
+  for req_var in ${required_vars}; do
+    echo "${req_var}=${!req_var}"
+  done
+}
+
 log_file="$USER_THERMOSTAT_HOME/logs/agent.log"
 
 if ${has_required_env}; then
   cat > ${log_file} <<EOL
 Launching the Thermostat agent with the following connection
 settings:
-   THERMOSTAT_AGENT_USERNAME=${THERMOSTAT_AGENT_USERNAME}
-   THERMOSTAT_AGENT_PASSWORD=${THERMOSTAT_AGENT_PASSWORD}
-   THERMOSTAT_DB_URL=${THERMOSTAT_DB_URL}
 EOL
-   # Launch the agent
-   launch_agent >> ${log_file} 2>&1 &
+  print_vars >> ${log_file}
+  # Launch the agent
+  launch_agent >> ${log_file} 2>&1 &
 else
   cat > ${log_file} <<EOL
 Thermostat agent process not started.
 One or more of the required environment variables
 not set. Environment was:
-   THERMOSTAT_AGENT_USERNAME=${THERMOSTAT_AGENT_USERNAME}
-   THERMOSTAT_AGENT_PASSWORD=${THERMOSTAT_AGENT_PASSWORD}
-   THERMOSTAT_DB_URL=${THERMOSTAT_DB_URL}
 EOL
+  print_vars >> ${log_file}
 fi
 return 0
