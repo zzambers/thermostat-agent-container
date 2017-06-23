@@ -1,12 +1,7 @@
 FROM openjdk-8-64bit-maven
 
 # Thermostat Agent Builder Image.
-#
-# Environment:
-#  * $THERMOSTAT_JVM_GC_URL           - The URL to the jvm-gc microservice.
-#  * $THERMOSTAT_JVM_MEMORY_URL       - The URL to the jvm-memory microservice.
-#  * $APP_USER                        - The application user the Java app Thermostat
-#                                       shall monitor runs as.
+# See README.md for environment variables required at runtime.
 ENV THERMOSTAT_VERSION=HEAD \
     APP_USER="default"
 
@@ -44,7 +39,7 @@ COPY ./bin /usr/bin
 # Remove any potential Hotspot perf data files
 RUN rm -rf /tmp/hsperfdata_*
 
-# User ID of user in parent image
+# User ID of user in base image
 USER 1001
 
 ENTRYPOINT [ "container-entrypoint" ]

@@ -12,6 +12,86 @@
     },
     "objects": [
         {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "openjdk-8-64bit-maven",
+                "generation": 1,
+                "labels": {
+                    "build": "openjdk-8-64bit-maven",
+                    "jdk8": ""
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "openjdk-8-64bit-maven:latest"
+                        },
+                        "generation": 1,
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": "Source"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-agent-container",
+                "generation": 1,
+                "labels": {
+                    "build": "thermostat-agent-container"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "thermostat-agent-container:latest"
+                        },
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": ""
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "thermostat-ng-agent",
+                "generation": 1,
+                "labels": {
+                    "build": "thermostat-ng-agent"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "thermostat-ng-agent:latest"
+                        },
+                        "importPolicy": {},
+                        "referencePolicy": {
+                            "type": ""
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
@@ -139,86 +219,6 @@
                         "name": "thermostat-ng-agent:latest"
                     }
                 }
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "openjdk-8-64bit-maven",
-                "generation": 1,
-                "labels": {
-                    "build": "openjdk-8-64bit-maven",
-                    "jdk8": ""
-                }
-            },
-            "spec": {
-                "tags": [
-                    {
-                        "name": "latest",
-                        "from": {
-                            "kind": "DockerImage",
-                            "name": "openjdk-8-64bit-maven:latest"
-                        },
-                        "generation": 1,
-                        "importPolicy": {},
-                        "referencePolicy": {
-                            "type": "Source"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "thermostat-agent-container",
-                "generation": 1,
-                "labels": {
-                    "build": "thermostat-agent-container"
-                }
-            },
-            "spec": {
-                "tags": [
-                    {
-                        "name": "latest",
-                        "from": {
-                            "kind": "DockerImage",
-                            "name": "thermostat-agent-container:latest"
-                        },
-                        "importPolicy": {},
-                        "referencePolicy": {
-                            "type": ""
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "thermostat-ng-agent",
-                "generation": 1,
-                "labels": {
-                    "build": "thermostat-ng-agent"
-                }
-            },
-            "spec": {
-                "tags": [
-                    {
-                        "name": "latest",
-                        "from": {
-                            "kind": "DockerImage",
-                            "name": "thermostat-ng-agent:latest"
-                        },
-                        "importPolicy": {},
-                        "referencePolicy": {
-                            "type": ""
-                        }
-                    }
-                ]
             }
         },
         {
