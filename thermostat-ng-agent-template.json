@@ -308,6 +308,14 @@
                                         "value": "${HOST_OVERVIEW_URL}"
                                     },
                                     {
+                                        "name": "THERMOSTAT_HOST_CPU_URL",
+                                        "value": "${HOST_CPU_URL}"
+                                    },
+                                    {
+                                        "name": "THERMOSTAT_HOST_MEMORY_URL",
+                                        "value": "${HOST_MEMORY_URL}"
+                                    },
+                                    {
                                         "name": "THERMOSTAT_COMMANDS_URL",
                                         "value": "${COMMANDS_URL}"
                                     }
@@ -386,6 +394,20 @@
             "description": "URL to the \"systems\" microservice provided by the Thermostat web gateway",
             "required": true,
             "value": "http://example.com:30000/systems/0.0.1"
+        },
+        {
+            "name": "HOST_CPU_URL",
+            "displayName": "\"system-cpu\" microservice URL",
+            "description": "URL to the \"system-cpu\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/system-cpu/0.0.1"
+        },
+        {
+            "name": "HOST_MEMORY_URL",
+            "displayName": "\"system-memory\" microservice URL",
+            "description": "URL to the \"system-memory\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/system-memory/0.0.1"
         },
         {
             "name": "COMMANDS_URL",

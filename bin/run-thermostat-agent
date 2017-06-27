@@ -17,7 +17,7 @@ if [ "${THERMOSTAT_AGENT_PASSWORD}_" == "_" ]; then
    exit 1
 fi
 
-plugins="vm-gc vm-memory host-overview commands"
+plugins="vm-gc vm-memory host-overview host-cpu host-memory commands"
 for plugin in ${plugins}; do
   prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/gateway.properties
   if [ ! -e "${prop_file}" ]; then
